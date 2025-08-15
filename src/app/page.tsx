@@ -36,7 +36,7 @@ export default function Home() {
       });
 
       if (!response.ok) {
-        throw new Error('Erreur lors de l'analyse. Veuillez réessayer.');
+        throw new Error('Erreur lors de l\'analyse. Veuillez réessayer.');
       }
 
       const data: AnalysisResult = await response.json();
