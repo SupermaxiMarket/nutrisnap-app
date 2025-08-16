@@ -75,11 +75,18 @@ export async function POST(request: Request) {
     const nutritionResponse = await fetch(nutritionUrl);
     const nutritionData = await nutritionResponse.json();
 
-    const nutrients = nutritionData.nutrition.nutrients;
-    const calories = nutrients.find((n: any) => n.name === 'Calories')?.amount || 0;
-    const protein = nutrients.find((n: any) => n.name === 'Protein')?.amount || 0;
-    const carbs = nutrients.find((n: any) => n.name === 'Carbohydrates')?.amount || 0;
-    const fat = nutrients.find((n: any) => n.name === 'Fat')?.amount || 0;
+    // Define a type for the nutrient object to satisfy TypeScript rules
+    interface Nutrient {
+      name: string;
+      amount: number;
+      unit: string;
+    }
+
+    const nutrients = nutritionData.nutrition.nutrients as Nutrient[];
+    const calories = nutrients.find((n) => n.name === 'Calories')?.amount || 0;
+    const protein = nutrients.find((n) => n.name === 'Protein')?.amount || 0;
+    const carbs = nutrients.find((n) => n.name === 'Carbohydrates')?.amount || 0;
+    const fat = nutrients.find((n) => n.name === 'Fat')?.amount || 0;
 
     const finalResult = {
       foodName: nutritionData.name.charAt(0).toUpperCase() + nutritionData.name.slice(1),
