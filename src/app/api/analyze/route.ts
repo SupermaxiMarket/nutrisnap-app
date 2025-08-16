@@ -45,8 +45,15 @@ export async function POST(request: Request) {
       },
     });
     const visionData = await visionResponse.json();
+
+    // Defensive check to see the actual error from Google Vision API
+    if (!visionData.responses || !visionData.responses[0]) {
+      console.error('Google Vision API returned an error:', visionData);
+      const errorMessage = visionData.error?.message || 'Invalid response from Google Vision API.';
+      return NextResponse.json({ error: `Google Vision API Error: ${errorMessage}` }, { status: 500 });
+    }
     
-    const labels = visionData.responses[0]?.labelAnnotations;
+    const labels = visionData.responses[0].labelAnnotations;
     if (!labels || labels.length === 0 || !labels[0].description) {
       return NextResponse.json({ error: 'Could not identify the food in the image.' }, { status: 400 });
     }
