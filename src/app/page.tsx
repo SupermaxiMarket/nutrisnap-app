@@ -31,15 +31,20 @@ export default function Home() {
     reader.readAsDataURL(file);
 
     try {
+      const formData = new FormData();
+      formData.append('image', file);
+
       const response = await fetch('/api/analyze', {
         method: 'POST',
+        body: formData,
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error('Erreur lors de l\'analyse. Veuillez réessayer.');
+        throw new Error(data.error || 'Erreur lors de l\'analyse. Veuillez réessayer.');
       }
 
-      const data: AnalysisResult = await response.json();
       setResult(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Une erreur inconnue est survenue.');
